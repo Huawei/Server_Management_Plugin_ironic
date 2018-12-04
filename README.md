@@ -32,9 +32,9 @@ $ cd ironic_driver_for_iBMC
 $ sudo ./install.sh patch
 ```   
    
-- Enabled Huawei ibmc server hardware type
+- Enabling Huawei ibmc server hardware type
 
-Add `ibmc` hardware type to `ironic-conductor` settings options to enabled it. For example:
+Add hardware type ``ibmc`` to the list of ``enabled_hardware_types``, ``enabled_power_interfaces`` and ``enabled_management_interfaces`` in ``/etc/ironic/ironic.conf``. For example:
 
 ```
 $ vi /etc/ironic/ironic.conf
@@ -46,7 +46,7 @@ enabled_power_interfaces = xxx,ibmc
 enabled_vendor_interfaces = xxx,ibmc
 ```
 
-- Restart Conductor
+- Restart Ironic conductor service
 
 Restart ironic conductor to load ibmc hardware type, then list enabled driver list to validate whether `ibmc` driver is installed successfully. 
 
@@ -78,7 +78,7 @@ The process below shows how to deploy an ibmc server using `pxe`, we are assumin
 
 1. Setup baremetal Boot mode
 
-Restart the bare metal server, press F11 to enter the Boot menu of the BIOS, and change the value of Boot Type to Legacy Boot.
+Restart the bare metal server, press F11 to enter the Boot menu of the BIOS, and change the value of Boot Type to `Legacy Boot`.
 
 
 2. Insure required services is running
@@ -91,24 +91,23 @@ $ systemctl status nginx
 $ systemctl status dnsmasq
 ```
 
-if services is not runing, use `systemctl start xxx` to active it.
+if services is not runing, use `systemctl start xxx` to run the service.
 
-3. Export Fake Auth env
+3. Export fake OpenStack authentication info
 
 ```bash
 $ export OS_URL=http://127.0.0.1:6385
 $ export OS_TOKEN=fake
 ```
 
-4. Creating Node
+4. Enrolling node with ibmc driver
 
-Creating a ibmc Node got two different configuations:
-- setup `driver`, `power-interface`, `management-interface` to `ibmc`
-- setup ibmc server authentication through `driver-info` parameter 
-  - ibmc_address: https endpoint of ibmc server
-  - ibmc_username: username of ibmc account 
-  - ibmc_password: password of ibmc account 
-  - ibmc_verify_ca: set to False if ibmc certifacation is not trustable
+Set node's `driver` property to `ibmc` to using the driver.
+The following properties specified in the node's `driver_info` property are required:
+- `ibmc_address`: https endpoint of ibmc server
+- `ibmc_username`: username of ibmc account 
+- `ibmc_password`: password of ibmc account 
+- `ibmc_verify_ca`: set to `False` if ibmc certifacation is not trustable
 
 ```bash
 $ baremetal_name="your-bare-metal-name"
@@ -118,8 +117,8 @@ $ baremetal_ibmc_addr="https://your-ibmc-server-host"
 $ baremetal_ibmc_user="your-ibmc-server-user-account"
 $ baremetal_ibmc_pass="your-ibmc-server-user-password"
 $  NODE=$(openstack baremetal node create --name "$baremetal_name" \
-    --driver "ibmc" --power-interface "ibmc" --management-interface "ibmc" \
     --boot-interface "pxe" --deploy-interface "iscsi" \
+    --driver "ibmc" \
     --driver-info ibmc_address="$baremetal_ibmc_addr" \
     --driver-info ibmc_username="$baremetal_ibmc_user" \
     --driver-info ibmc_password="$baremetal_ibmc_pass" \
@@ -128,7 +127,6 @@ $  NODE=$(openstack baremetal node create --name "$baremetal_name" \
     --driver-info deploy_ramdisk="$baremetal_deploy_ramdisk" \
     -f value -c uuid)
 ```
-
 
 4. Creating a Port
 
@@ -188,7 +186,4 @@ openstack baremetal node deploy $NODE
 ```
    $ openstack baremetal node passthru call --http-method GET $NODE list_boot_type_order
 ```
-
-
-
 
