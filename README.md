@@ -34,7 +34,7 @@ $ sudo ./install.sh patch
    
 - Enabling Huawei ibmc server hardware type
 
-Add hardware type ``ibmc`` to the list of ``enabled_hardware_types``, ``enabled_power_interfaces`` and ``enabled_management_interfaces`` in ``/etc/ironic/ironic.conf``. For example:
+Add hardware type `ibmc` to the list of `enabled_hardware_types`, `enabled_power_interfaces` and `enabled_management_interfaces` in `/etc/ironic/ironic.conf`. For example:
 
 ```
 $ vi /etc/ironic/ironic.conf
