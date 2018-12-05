@@ -184,6 +184,6 @@ openstack baremetal node deploy $NODE
 - Querying the boot sequence:
 
 ```
-   $ openstack baremetal node passthru call --http-method GET $NODE list_boot_type_order
+$ openstack baremetal node passthru call --http-method GET $NODE boot_up_seq
 ```
 
