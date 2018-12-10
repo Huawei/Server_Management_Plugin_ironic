@@ -1,4 +1,40 @@
 #!/bin/bash
+set -e
+
+# Usage
+function usage {
+    echo "Usage: `basename $0` [uninstall]"
+	cat <<EOF
+	USAGE
+		`basename $0` [uninstall]
+
+	DESCRIPTION
+		Patch script for ironic ibmc driver.
+		
+		Patch when no argument supply.
+		Uninstall patch when first argument is uninstall
+EOF
+	exit 1
+}
+
+# Whether this operation is patch or uninstall the patch.
+# 2: Print usage
+# 1: Uninstall the patch
+# 0: Patch
+IS_PATCH=2
+
+# First argument is operation [patch|undo]
+OP="${1}"
+
+if [ -z "$OP" ]
+then
+	IS_PATCH=0
+elif [ "$OP" == "uninstall" ]
+then
+	IS_PATCH=1
+else
+	usage
+fi
 
 IRONIC_INSTALLED="`pip show ironic --disable-pip-version-check | grep '^Name'`"
 
@@ -24,8 +60,34 @@ PATH_COMMON_EXCEPTION="$IRONIC_DIR/common/exception.py"
 PATH_COMMON_EXCEPTION_BAK="$IRONIC_DIR/common/exception.py$BAK_SUFFIX"
 PATH_ENTRY_POINTS="$IRONIC_EGG_DIR/entry_points.txt"
 PATH_ENTRY_POINTS_BAK="$IRONIC_EGG_DIR/entry_points.txt$BAK_SUFFIX"
+PATH_IRONIC_CONF="/etc/ironic/ironic.conf"
+PATH_IRONIC_CONF_BAK="${PATH_IRONIC_CONF}${BAK_SUFFIX}"
 # Patch file
 PATCH_FILE="$PWD/ironic_driver_for_iBMC.tar"
+
+# Replace or append ibmc related config
+function config {
+    local OPTION_STR="$1"
+
+    ENABLED_STR=$(grep -E "^$OPTION_STR=" $PATH_IRONIC_CONF || :)
+    ENABLED_STR_NOT_EMPTY=$(grep -E "^$OPTION_STR=(.+)" $PATH_IRONIC_CONF || :)
+    IBMC_TYPE="ibmc"
+    ENABLED=$(echo $ENABLED_STR | grep -E "ibmc" || :)
+    if [ ! -z ENABLED ]
+    then
+        return # Already enabled ibmc related config
+    fi
+
+    if [ ! -z "$ENABLED_STR" -a ! -z "$ENABLED_STR_NOT_EMPTY" ]
+    then
+        sed -i$BAK_SUFFIX -r -e "s/$ENABLED_STR/${ENABLED_STR},${IBMC_TYPE}/" $PATH_IRONIC_CONF
+    elif [ ! -z "$ENABLED_STR" -a -z "$ENABLED_STR_NOT_EMPTY" ]
+    then
+        sed -i$BAK_SUFFIX -r -e "s/$ENABLED_STR/${ENABLED_STR}${IBMC_TYPE}/" $PATH_IRONIC_CONF
+    else
+        echo "$OPTION_STR=$IBMC_TYPE" >> $PATH_IRONIC_CONF
+    fi
+}
 
 # Patch function 
 function patch {
@@ -69,6 +131,12 @@ class IBMCConnectionError(IBMCError):
     sed -i -r -e "s/(\[$INTERFACE_VENDOR\])/\1\n$IBMC_VENDOR/" $PATH_ENTRY_POINTS
     sed -i -r -e "s/(\[$HARDWARE_TYPES\])/\1\n$IBMC_HW_TYPE/" $PATH_ENTRY_POINTS
 
+    # Enabled ibmc related config
+    config "enabled_hardware_types"
+    config "enabled_management_interfaces"
+    config "enabled_power_interfaces"
+    config "enabled_vendor_interfaces"
+
     echo "Patch done!"
 }
 
@@ -77,22 +145,15 @@ function undo_patch {
     mv -f $PATH_CONF_INIT_BAK $PATH_CONF_INIT
     mv -f $PATH_COMMON_EXCEPTION_BAK $PATH_COMMON_EXCEPTION
     mv -f $PATH_ENTRY_POINTS_BAK $PATH_ENTRY_POINTS
+    mv -f $PATH_IRONIC_CONF_BAK $PATH_IRONIC_CONF
 
     echo "Undo patch done!"
 }
 
-# Usage
-function usage {
-    echo "Usage: `basename $0` [patch|undo]"
-}
-
-# First argument is operation [patch|undo]
-OP="${1}"
-
-if [ "$OP" == "patch" ]
+if [ "$IS_PATCH" -eq "0" ]
 then
     patch
-elif [ "$OP" == "undo" ]
+elif [ "$IS_PATCH" -eq "1" ]
 then
     undo_patch
 else

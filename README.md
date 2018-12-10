@@ -29,7 +29,7 @@ $ cd ~/ironic-ibmc-driver
 $ curl -O https://github.com/Huawei/Server_Management_Plugin_Openstack/release/ironic_driver_for_iBMC.tar.gz
 $ tar zxvf ironic_driver_for_iBMC.tar.gz
 $ cd ironic_driver_for_iBMC
-$ sudo ./install.sh patch
+$ sudo ./install.sh
 ```   
    
 - Enabling Huawei ibmc server hardware type
@@ -67,7 +67,7 @@ $ sudo openstack baremetal driver list
 
 ``` bash
 $ cd ~/ironic-ibmc-driver
-$ sudo ./install.sh undo	
+$ sudo ./install.sh uninstall	
 ```
 
 

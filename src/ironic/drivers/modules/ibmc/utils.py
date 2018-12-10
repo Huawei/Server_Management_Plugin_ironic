@@ -1,4 +1,17 @@
-# TODO(bill.chan) license
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+# Version 1.0.0
 
 import collections
 import os
@@ -381,6 +394,9 @@ class IBMCSession(object):
         }
         create_session_url = '%s/Sessions' % self._url
         r = self._conn.make_req('POST', create_session_url, json=json)
+        # TODO (Bill.Chan): Remove useless property `id` and `expire_at`
+        #  at next release. Cause some old version iBMC API response is
+        #  incompatible with spec
         id = _load_from_json(r.json(), 'Id')
         token = r.headers.get('X-Auth-Token')
 
@@ -406,6 +422,7 @@ class IBMCSession(object):
     def expire_at(self):
         return self._expire_at
 
+    # TODO(Bill.Chan): Deprecated. Need to remove at next release
     def is_valid(self):
         expire_at = self._expire_at or datetime.datetime.now()
         return (self._id and self._token and
