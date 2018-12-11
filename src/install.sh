@@ -142,10 +142,22 @@ class IBMCConnectionError(IBMCError):
 
 # Undo patch function
 function undo_patch {
-    mv -f $PATH_CONF_INIT_BAK $PATH_CONF_INIT
-    mv -f $PATH_COMMON_EXCEPTION_BAK $PATH_COMMON_EXCEPTION
-    mv -f $PATH_ENTRY_POINTS_BAK $PATH_ENTRY_POINTS
-    mv -f $PATH_IRONIC_CONF_BAK $PATH_IRONIC_CONF
+    if [ -e $PATH_CONF_INIT_BAK ]
+    then
+        mv -f $PATH_CONF_INIT_BAK $PATH_CONF_INIT
+    fi
+    if [ -e $PATH_COMMON_EXCEPTION_BAK ]
+    then
+        mv -f $PATH_COMMON_EXCEPTION_BAK $PATH_COMMON_EXCEPTION
+    fi
+    if [ -e $PATH_ENTRY_POINTS_BAK ]
+    then
+        mv -f $PATH_ENTRY_POINTS_BAK $PATH_ENTRY_POINTS
+    fi
+    if [ -e $PATH_IRONIC_CONF_BAK ]
+    then
+        mv -f $PATH_IRONIC_CONF_BAK $PATH_IRONIC_CONF
+    if
 
     echo "Undo patch done!"
 }
