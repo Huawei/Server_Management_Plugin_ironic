@@ -107,7 +107,8 @@ The following properties specified in the node's `driver_info` property are requ
 - `ibmc_address`: https endpoint of ibmc server
 - `ibmc_username`: username of ibmc account 
 - `ibmc_password`: password of ibmc account 
-- `ibmc_verify_ca`: set to `False` if ibmc certifacation is not trustable
+- `ibmc_verify_ca`: if ibmc_address has the https scheme, the
+driver will use a secure (TLS) connection when talking to the iBMC. By default (if this is not set or set to True), the driver will try to verify the host certificates. This can be set to the path of a certificate file or directory with trusted certificates that the driver will use for verification. To disable verifying TLS, set this to False. This is optional.
 
 ```bash
 $ baremetal_name="your-bare-metal-name"
