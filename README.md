@@ -31,20 +31,6 @@ $ tar zxvf ironic_driver_for_iBMC.tar.gz
 $ cd ironic_driver_for_iBMC
 $ sudo ./install.sh
 ```   
-   
-- Enabling Huawei ibmc server hardware type
-
-Add hardware type `ibmc` to the list of `enabled_hardware_types`, `enabled_power_interfaces` and `enabled_management_interfaces` in `/etc/ironic/ironic.conf`. For example:
-
-```
-$ vi /etc/ironic/ironic.conf
-
-[DEFAULT]
-enabled_hardware_types = xxx,ibmc
-enabled_management_interfaces = xxx,ibmc
-enabled_power_interfaces = xxx,ibmc
-enabled_vendor_interfaces = xxx,ibmc
-```
 
 - Restart Ironic conductor service
 
@@ -57,7 +43,7 @@ $ sudo openstack baremetal driver list
 +---------------------+----------------+
 | Supported driver(s) | Active host(s) |
 +---------------------+----------------+
-| ibmc                | 112.93.129.99  |
+| ibmc                | xxx.xxx.xx.xx  |
 +---------------------+----------------+
 ```
 
