@@ -32,13 +32,20 @@ $ cd ironic_driver_for_iBMC
 $ sudo ./install.sh
 ```   
 
+- Export fake OpenStack authentication info
+
+```bash
+$ export OS_URL=http://127.0.0.1:6385
+$ export OS_TOKEN=fake
+```
+
 - Restart Ironic conductor service
 
 Restart ironic conductor to load ibmc hardware type, then list enabled driver list to validate whether `ibmc` driver is installed successfully. 
 
 ```bash
 $ sudo systemctl restart ironic-conductor
-$ sudo openstack baremetal driver list
+$ openstack baremetal driver list
 
 +---------------------+----------------+
 | Supported driver(s) | Active host(s) |
@@ -79,14 +86,7 @@ $ systemctl status dnsmasq
 
 if services is not runing, use `systemctl start xxx` to run the service.
 
-3. Export fake OpenStack authentication info
-
-```bash
-$ export OS_URL=http://127.0.0.1:6385
-$ export OS_TOKEN=fake
-```
-
-4. Enrolling node with ibmc driver
+3. Enrolling node with ibmc driver
 
 Set node's `driver` property to `ibmc` to using the driver.
 The following properties specified in the node's `driver_info` property are required:
@@ -167,6 +167,11 @@ openstack baremetal node deploy $NODE
 
 
 ## V. Customer calls provided by ibmc driver 
+
+- Querying vendor specific pass through method:
+```
+$ openstack baremetal node passthru list $NODE
+```
 
 - Querying the boot sequence:
 
