@@ -43,7 +43,7 @@ $ sudo openstack baremetal driver list
 +---------------------+----------------+
 | Supported driver(s) | Active host(s) |
 +---------------------+----------------+
-| ibmc                | xxx.xxx.xx.xx  |
+| ibmc                | 192.168.0.10   |
 +---------------------+----------------+
 ```
 
