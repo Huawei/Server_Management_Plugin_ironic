@@ -100,10 +100,11 @@ function check_envir {
     local EX_EP_IBMC_POWER=$(grep -E "^$IBMC_POWER" $PATH_ENTRY_POINTS || :)
     local EX_EP_IBMC_VENDOR=$(grep -E "^$IBMC_VENDOR" $PATH_ENTRY_POINTS || :)
     # Config ...
-    local EX_CFG_IBMC_HW=$(grep -E "^$IRONIC_CFG_HW=.*ibmc.*" $PATH_IRONIC_CONF || :)
-    local EX_CFG_IBMC_MGMT=$(grep -E "^$IRONIC_CFG_MGMT=.*ibmc.*" $PATH_IRONIC_CONF || :)
-    local EX_CFG_IBMC_POWER=$(grep -E "^$IRONIC_CFG_POWER=.*ibmc.*" $PATH_IRONIC_CONF || :)
-    local EX_CFG_IBMC_VENDOR=$(grep -E "^$IRONIC_CFG_VENDOR=.*ibmc.*" $PATH_IRONIC_CONF || :)
+    local EX_CFG_IBMC_HW=$(grep -E "^$IRONIC_CFG_HW=.*,?ibmc.*" $PATH_IRONIC_CONF || :)
+    local EX_CFG_IBMC_MGMT=$(grep -E "^$IRONIC_CFG_MGMT=.*,?ibmc.*" $PATH_IRONIC_CONF || :)
+    local EX_CFG_IBMC_POWER=$(grep -E "^$IRONIC_CFG_POWER=.*,?ibmc.*" $PATH_IRONIC_CONF || :)
+    local EX_CFG_IBMC_VENDOR=$(grep -E "^$IRONIC_CFG_VENDOR=.*,?ibmc.*" $PATH_IRONIC_CONF || :)
+    
 
     # Files that are not in consistent state
     local EX_FILES
@@ -227,6 +228,10 @@ function undo_patch {
     # Ironic don't allow some option value be empty list (empty string).
     # In case option value become empty list after uninstall, 
     #+ we leave comma there intentionally
+    sed -i -r -e "s/^($IRONIC_CFG_HW=.*)(,ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
+    sed -i -r -e "s/^($IRONIC_CFG_MGMT=.*)(,ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
+    sed -i -r -e "s/^($IRONIC_CFG_POWER=.*)(,ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
+    sed -i -r -e "s/^($IRONIC_CFG_VENDOR=.*)(,ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
     sed -i -r -e "s/^($IRONIC_CFG_HW=.*)(ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
     sed -i -r -e "s/^($IRONIC_CFG_MGMT=.*)(ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
     sed -i -r -e "s/^($IRONIC_CFG_POWER=.*)(ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
