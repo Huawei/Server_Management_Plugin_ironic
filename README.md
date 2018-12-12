@@ -7,7 +7,7 @@ you can implement the OS deployment on servers by using this plug-in.
 
 - Plug-in name: `ironic_driver_for_iBMC`
 - Supported version: `OpenStack Rocky`
-- Supported device: `Huawei rack server 2288H V5 `
+- Supported device: Huawei rack server `2288H V5`, `CH121 V5 `
 
 ## II. Plug-in Functions
 

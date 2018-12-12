@@ -135,13 +135,7 @@ function check_envir {
     then
         return 0
     else
-        echo -e "Patch failed!
-
-Following files may have iBMC related configuration or codes. 
-You could uninstall this script to erase iBMC related configuration or codes,
-or check aginst these files then update manually.
-        ${EX_FILES[@]}
-        "
+        echo -e "The driver is installed. Uninstall it and then install it again."
         exit 1
     fi
 }
@@ -203,7 +197,7 @@ function patch {
     config "enabled_power_interfaces"
     config "enabled_vendor_interfaces"
 
-    echo "Patch done!"
+    echo "Install success！"
 }
 
 # Undo patch function
@@ -237,7 +231,7 @@ function undo_patch {
     sed -i -r -e "s/^($IRONIC_CFG_POWER=.*)(ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
     sed -i -r -e "s/^($IRONIC_CFG_VENDOR=.*)(ibmc)(.*)/\1\3/" $PATH_IRONIC_CONF
 
-    echo "Uninstall patch done!"
+    echo "Uninstall success！"
 }
 
 if [ "$IS_PATCH" -eq "0" ]
