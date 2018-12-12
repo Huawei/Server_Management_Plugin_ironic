@@ -26,7 +26,7 @@ This guide is based on Ubuntu 18.04.
 ```bash
 $ mkdir ~/ironic-ibmc-driver
 $ cd ~/ironic-ibmc-driver
-$ curl -O https://github.com/Huawei/Server_Management_Plugin_Openstack/release/ironic_driver_for_iBMC.tar.gz
+$ curl -O https://raw.githubusercontent.com/huawei/Server_Management_Plugin_ironic/master/release/ironic_driver_for_iBMC.tar.gz
 $ tar zxvf ironic_driver_for_iBMC.tar.gz
 $ cd ironic_driver_for_iBMC
 $ sudo ./install.sh
