@@ -12,7 +12,7 @@ you can implement the OS deployment on servers by using this plug-in.
 ## II. Plug-in Functions
 
 - OS deployment
-- Startup sequence query
+- Boot sequence query
 
 ## III. Install/Uninstall iBMC driver 
  
@@ -22,7 +22,7 @@ This guide is based on Ubuntu 18.04.
 
 - Connect to the OpenStack Rocky environment.
 
-- download and install  [driver](https://github.com/Huawei/Server_Management_Plugin_Openstack)
+- download and install  [driver](https://github.com/Huawei/Server_Management_Plugin_ironic)
 ```bash
 $ mkdir ~/ironic-ibmc-driver
 $ cd ~/ironic-ibmc-driver
